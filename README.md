@@ -26,19 +26,19 @@ This project was built as part of an internship task for **Vizuara AI Labs**.
 
 Here are some glimpses of the Sentiment Explorer website:  
 
-![Navigation bar](<img src="webpage ss1.jpg" alt="Nav Bar" width="600">)  
+![Navigation bar]<img src="webpage ss1.jpg" alt="Nav Bar" width="600">  
 *Nav bar of Sentiment Explorer*  
 
-![Story Section](<img src="webpage ss2.jpg" alt="Quiz Section" width="600">)  
+![Story Section]<img src="webpage ss2.jpg" alt="Quiz Section" width="600">
 *Interactive storytelling section for kids*  
 
-![Play Section](<img src="webpage ss3.jpg" alt="Play Section" width="600">)  
+![Play Section]<img src="webpage ss3.jpg" alt="Play Section" width="600">  
 *Interactive playing section for kids with voice enabling option*  
 
-![Quiz Section]<img src="webpage ss4.jpg" alt="Quiz section" width="600">)  
+![Quiz Section]<img src="webpage ss4.jpg" alt="Quiz section" width="600">  
 *Interactive quiz section for kids*  
 
-![About Section](<img src="webpage ss5.jpg" alt="About section" width="600">)  
+![About Section]<img src="webpage ss5.jpg" alt="About section" width="600"> 
 *About the mini project*  
 
 
