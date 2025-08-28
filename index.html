@@ -134,6 +134,24 @@
       width: 100%; /* full width buttons */
     }
   }
+@media (max-width: 600px) {
+  .nav-inner {
+    flex-direction: column;   /* stack logo and links */
+    align-items: center;
+    gap: 10px;                /* space between logo and nav */
+  }
+
+  .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .logo img {
+    max-height: 40px;  /* shrink logo for mobile */
+    width: auto;
+  }
+}
 </style>
 </head>
 <body>
@@ -466,3 +484,4 @@ setHeroMeterFromScore(0);
   </script>
 </body>
 </html>
+
