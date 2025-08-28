@@ -39,7 +39,7 @@ Here are some glimpses of the Sentiment Explorer website:
 
 ## 🔗 Live Demo  
 
-👉 (https://vkarthikeya-dev.github.io/setiment-explorer/)  
+👉 (https://vkarthikeya-dev.github.io/setiment-explorer/) 
 
 
 
