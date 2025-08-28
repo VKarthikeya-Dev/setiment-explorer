@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css"> <!-- if you have external css -->
+  <title>Vizuara Sentiment Explorer</title>
+  <meta name="description" content="Learn Sentiment Analysis the fun way with Vizuara — story, demo, and kid-friendly quiz!" />
+  <style>
+    .legend {
+  margin-top: 8px;
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  margin: auto;
+  padding: 10px;
+}
+
+
+    :root {
+      --bg: #0b1220;
+      --card: #111a2b;
+      --muted: #a9b4c7;
+      --brand: #6ee7b7;   /* mint */
+      --brand-2: #60a5fa; /* blue */
+      --pos: #16a34a;
+      --neg: #ef4444;
+      --neu: #64748b;
+      --ring: rgba(96,165,250,.4);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  color: #eef2ff;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+ }
+
+    a { color: var(--brand-2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Navbar */
+    .nav {
+      position: sticky; top: 0; z-index: 20;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.6);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .nav-inner { max-width: 1100px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; }
+    .brand { display: flex; gap: 10px; align-items: center; font-weight: 800; letter-spacing: .3px; }
+    .logo { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 10px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 0 14px rgba(96,165,250,.35); }
+    .logo svg { filter: drop-shadow(0 2px 6px rgba(0,0,0,.25)); }
+    .nav-links { display: flex; gap: 18px; font-weight: 600; color: var(--muted); flex-wrap: wrap; }
+    .nav-links a { padding: 8px 10px; border-radius: 10px; }
+    .nav-links a:hover { background: rgba(255,255,255,.06); color: #fff; text-decoration: none; }
+
+    /* Hero */
+    .hero { max-width: 1100px; margin: 0 auto; padding: 40px 20px 20px; display: grid; gap: 26px; grid-template-columns: 1.15fr .85fr; align-items: center; }
+    .hero h1 { font-size: clamp(28px, 5vw, 48px); margin: 0 0 10px; line-height: 1.1; }
+    .hero p { color: var(--muted); margin: 0 0 20px; }
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 14px; font-weight: 700; border: 1px solid rgba(255,255,255,.08); background: #18263f; color: #fff; cursor: pointer; }
+    .btn.primary { background: linear-gradient(135deg, var(--brand), var(--brand-2)); border: none; color: #0b1220; box-shadow: 0 8px 24px rgba(96,165,250,.35); }
+    .btn:focus { outline: 4px solid var(--ring); outline-offset: 2px; }
+
+    .hero-card { background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 18px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
+    .meter { height: 12px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; }
+    .meter > span { display: block;
+  height: 100%;
+  border-radius: 8px;
+  background-color: gray 
+    }
+
+    /* Sections */
+    section { max-width: 1100px; margin: 0 auto; padding: 50px 20px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .card { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 18px; }
+    .card h3 { margin-top: 0; }
+
+    /* Playground */
+    .play { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; align-items: start; }
+    .input-box { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 16px; }
+    textarea { width: 100%; min-height: 90px; resize: vertical; padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: #0f1a2d; color: #e6edff; font-size: 16px; }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .chip { background: rgba(255,255,255,.08); padding: 8px 10px; border-radius: 999px; font-size: 13px; color: var(--muted); cursor: pointer; }
+    .chip:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+    .result { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 16px; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; font-weight: 800; letter-spacing: .2px; }
+    .badge.pos { background: rgba(22,163,74,.15); color: var(--pos); }
+    .badge.neg { background: rgba(239,68,68,.15); color: var(--neg); }
+    .badge.neu { background: orangered; color: var(--neu); }
+
+    .explain { margin-top: 12px; color: var(--muted); font-size: 14px; }
+    .explain .kw { display: inline-block; margin: 4px 6px 0 0; padding: 6px 8px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px dashed rgba(255,255,255,.12); }
+
+    /* Quiz */
+    .quiz { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 16px; }
+    .quiz .q { font-size: 18px; margin: 8px 0 16px; }
+    .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .choices .btn { justify-content: center; }
+    .score { color: var(--muted); margin-top: 10px; }
+
+    /* Footer */
+    footer { text-align: center; color: var(--muted); padding: 50px 20px; border-top: 1px solid rgba(255,255,255,.06); }
+
+  
+/* Responsive layout */
+
+@media (max-width: 900px) {
+    .hero,
+    .play {
+      grid-template-columns: 1fr; /* stack hero + playground */
+    }
+  }
+
+  @media (max-width: 520px) {
+    .choices {
+      grid-template-columns: 1fr; /* stack quiz choices */
+    }
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    .btn {
+      width: 100%; /* full width buttons */
+    }
+  }
+</style>
+</head>
+<body>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- V icon -->
+          <img src="data:image/png;base64,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" 
+     alt="Vizura Logo" style="height:60px; width:auto;">
+        
+
+        </div>
+        
+      </div>
+      <div class="nav-links" role="navigation" aria-label="Primary">
+        <a href="#learn">Learn</a>
+        <a href="#play">Play</a>
+        <a href="#quiz">Quiz</a>
+        <a href="#about">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero" id="top">
+    <div>
+      <h1>Sentiment Explorer — by Vizuara</h1>
+      <p>
+        Teach kids how computers read feelings in text. Type a sentence, watch the emoji meter,
+        and learn with a friendly story and quick quiz.
+      </p>
+      <div class="cta-row">
+        <button class="btn primary" id="startPlay">Try the Demo</button>
+        <a class="btn" href="#learn">What is Sentiment Analysis?</a>
+      </div>
+    </div>
+    <div class="hero-card" aria-hidden="true">
+      <div style="display:grid; gap:10px">
+        <div style="display:flex; align-items:center; justify-content:space-between">
+        <strong>Emoji Meter</strong><br>
+        <p> CLick on the below buttons to test the emoji meter</p>         
+        <!-- <span style="opacity:.7">😢 😐 😊</span> -->
+        </div>
+        <div class="meter"><span></span></div>
+        <div class="legend">
+  <span style="color:red;">■ Negative</span>
+  <span style="color:orange;">■ Neutral</span>
+  <span style="color:green;">■ Positive</span>
+</div>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <span class="chip">I love ice cream!</span>
+          <span class="chip">I hate homework...</span>
+          <span class="chip">It is a book.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- LEARN / STORY -->
+  <section id="learn">
+    <h2>Learn with a Mini‑Story</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>1) 🌟 Meet Riya & Robo 🤖</h3>
+        <p>Riya runs to Robo after school and says:<br>“Guess what, Robo! I scored the winning goal in football today. It was awesome!” <br>Robo’s eyes light up. “Awesome means something super good, right? No wonder you’re so happy!”<br>Riya nods, grinning: “Yep, awesome is my favorite happy word!”<br><br>The word <strong>awesome</strong> is a happy word.</p>
+      </div>
+      <div class="card">
+        <h3>2) Words carry feelings</h3>
+        <p>Happy words (love, great) add <br> <span class="badge pos">+ Positive</span> <br> Sad words (bad, hate) add <br> <span class="badge neg">− Negative</span><br>Neutral words (calm, bored) add <br> <span class="badge neu">Neutral</span></p>
+      </div>
+      <div class="card">
+        <h3>3) Tricky bits</h3>
+        <p><strong>Not</strong> can flip meaning: “not good” feels negative. “Very” makes feelings stronger: “very happy”.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAYGROUND -->
+  <section id="play">
+    <h2>Playground — Try a Sentence</h2>
+    <div class="play">
+      <div class="input-box">
+        <div class="row" style="justify-content:space-between; margin-bottom:8px">
+          <div class="row" role="group" aria-label="Approach selector">
+            <label class="chip"><input type="radio" name="approach" value="lexicon" checked> Lexicon</label>
+            <label class="chip"><input type="radio" name="approach" value="emoji"> Emoji & Punctuation</label>
+          </div>
+          <label class="row" style="gap:6px"><input type="checkbox" id="voiceToggle"> 🔊 Voice</label>
+        </div>
+        <textarea id="text" placeholder="Type something like: I am very happy today!"></textarea>
+        <div class="row" style="margin:10px 0 6px">
+          <span class="chip ex">I love vacations</span>
+          <span class="chip ex">This is not good</span>
+          <span class="chip ex">It is a table</span>
+          <span class="chip ex">I Hate the rain</span>
+        </div>
+        <div class="row">
+          <button class="btn primary" id="analyze">Analyze</button>
+          <button class="btn" id="clear">Clear</button>
+        </div>
+      </div>
+
+      <div class="result" aria-live="polite" aria-atomic="true">
+        <div id="label" class="badge neu">Neutral 😐</div>
+        <div id="summary" style="margin-top:8px">Type a sentence and click Analyze.</div>
+        <div class="explain" id="explain"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <h2>Quick Quiz</h2>
+    <p>Test your understing of sentiment analysis by clicking on one of the three options displayed on the screen. All the very Best 😊</p>
+    <div class="quiz">
+      <div class="q" id="qText">Loading question…</div>
+      <div class="choices">
+        <button class="btn" data-choice="pos">😊 Positive</button>
+        <button class="btn" data-choice="neu">😐 Neutral</button>
+        <button class="btn" data-choice="neg">😢 Negative</button>
+      </div>
+      <div class="score" id="score">Question 1 of 5</div>
+    </div>
+  </section>
+
+  <!-- ABOUT / FOOTER -->
+  <section id="about">
+    <h2>About this mini‑product</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Built for classrooms</h3>
+        <p>Zero sign‑in, zero data collection. Everything runs in your browser.
+           Works offline once loaded.</p>
+      </div>
+      <div class="card">
+        <h3>Two approaches</h3>
+        <p><strong>Lexicon</strong> shows how words carry feelings with rules. <strong>Emoji mode</strong> uses emojis, caps, and ! to estimate mood.</p>
+      </div>
+      <div class="card">
+        <h3>By Vizuara</h3>
+        <p>Crafted with our storytelling philosophy: simple, visual, and hands‑on.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    © <span id="year"></span> Vizuara — Sentiment Explorer. All rights reserved.
+  </footer>
+
+  <script>
+    // ---------- Utilities ----------
+    const $ = (q, el=document) => el.querySelector(q);
+    const $$ = (q, el=document) => Array.from(el.querySelectorAll(q));
+
+    function speak(text) {
+      try {
+        const enabled = $('#voiceToggle').checked;
+        if (!enabled) return;
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.rate = 1; msg.pitch = 1; msg.lang = 'en-US';
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(msg);
+      } catch (e) { /* ignore speech errors */ }
+    }
+
+    // ---------- Lexicon approach with simple rules ----------
+    const POS = new Set(['happy','good','great','love','awesome','wonderful','excellent','fantastic','amazing','like','enjoy','fun','smile','cool','best','nice','brilliant','super','yay','wow','sweet','glad','cheerful','positive','delight']);
+    const NEG = new Set(['sad','bad','angry','hate','terrible','awful','horrible','worst','upset','annoyed','boring','tired','cry','sucks','stupid','mean','fear','scared','dislike','pain','disaster','ugly','negative']);
+    const NEGATE = new Set(["not","no","never","don't","didn't","can't","won't","isn't","aren't","wasn't","weren't","without"]);
+    const BOOST = new Set(['very','really','super','so','extremely','too']);
+    const DIM = new Set(['slightly','little','somewhat','kinda','kindof','bit']);
+
+    function tokenize(s){
+      return (s.toLowerCase().match(/[a-z']+|[!?.]+|[\u{1F600}-\u{1F64F}]/gu) || []);
+    }
+
+    function sentimentLexicon(text){
+      const tokens = tokenize(text);
+      let score = 0; const reasons = [];
+      for(let i=0;i<tokens.length;i++){
+        const t = tokens[i];
+        let base = 0; let label = '';
+        if(POS.has(t)){ base = +1; label = `+ ${t}`; }
+        if(NEG.has(t)){ base = -1; label = `− ${t}`; }
+        if(base!==0){
+          // look back window for modifiers
+          const windowTokens = tokens.slice(Math.max(0,i-3), i);
+          const hasNeg = windowTokens.some(w=>NEGATE.has(w));
+          if(hasNeg){ base *= -1; label += ' (negated)'; }
+          const boosts = windowTokens.filter(w=>BOOST.has(w)).length;
+          const dims = windowTokens.filter(w=>DIM.has(w)).length;
+          base *= (1 + 0.5*boosts);
+          base *= (dims? 0.6 : 1);
+          // caps emphasis
+          const rawWord = (text.split(/\b/)[i]||'');
+          if(rawWord && rawWord===rawWord.toUpperCase() && rawWord.length>2) base *= 1.2;
+          score += base;
+          reasons.push({word:t, base, label});
+        }
+      }
+      // Exclamations amplify
+      const bangs = (text.match(/!/g)||[]).length; if(bangs) score *= Math.min(1+0.15*bangs, 1.45);
+      // Emoji nudges
+      const posEmoji = (text.match(/[😀😃😄😁😊🙂😍🥳💖❤️✨]/g)||[]).length;
+      const negEmoji = (text.match(/[😞😟😠😡😢😭💔]/g)||[]).length;
+      score += posEmoji*0.8 - negEmoji*0.8;
+      return {score, reasons};
+    }
+
+    // ---------- Emoji/punctuation only approach ----------
+    function sentimentEmoji(text){
+      let score = 0; const reasons = [];
+      const bangs = (text.match(/!/g)||[]).length; if(bangs){ score += Math.min(bangs*0.3, 1); reasons.push({label:`emphasis ! x${bangs}`, base: bangs*0.3}); }
+      const capsWords = (text.match(/\b[A-Z]{3,}\b/g)||[]).length; if(capsWords){ score += Math.min(capsWords*0.2, .8); reasons.push({label:`CAPS x${capsWords}`, base: capsWords*0.2}); }
+      const posEmoji = (text.match(/[😀😃😄😁😊🙂😍🥳💖❤️✨]/g)||[]).length; if(posEmoji){ score += posEmoji*0.8; reasons.push({label:`😊 emojis x${posEmoji}`, base: posEmoji*0.8}); }
+      const negEmoji = (text.match(/[😞😟😠😡😢😭💔]/g)||[]).length; if(negEmoji){ score -= negEmoji*0.8; reasons.push({label:`😢 emojis x${negEmoji}`, base: -negEmoji*0.8}); }
+      // quick phrases
+      if(/\b(i\s+love|so\s+happy|great)\b/i.test(text)){ score += 1; reasons.push({label:'happy phrase', base:1}); }
+      if(/\b(i\s+hate|so\s+sad|terrible)\b/i.test(text)){ score -= 1; reasons.push({label:'sad phrase', base:-1}); }
+      return {score, reasons};
+    }
+
+    function labelFromScore(score){
+      if(score > 0.6) return {k:'pos', text:'Positive'};
+      if(score < -0.6) return {k:'neg', text:'Negative'};
+      return {k:'neu', text:'Neutral'};
+    }
+
+    function renderExplanation(reasons){
+      if(!reasons.length) return '<em>No strong feeling words found.</em>';
+      return reasons.map(r=>`<span class="kw">${r.label || (r.base>0?'+':'−')} ${Math.abs(r.base).toFixed(2)}</span>`).join(' ');
+    }
+
+    function analyzeCurrent(){
+      const text = $('#text').value.trim();
+      if(!text){ $('#label').className = 'badge neu'; $('#label').textContent = 'Neutral 😐'; $('#summary').textContent = 'Type a sentence and click Analyze.'; $('#explain').innerHTML = ''; return; }
+      const approach = document.querySelector('input[name="approach"]:checked').value;
+      const {score, reasons} = (approach==='lexicon') ? sentimentLexicon(text) : sentimentEmoji(text);
+      const lab = labelFromScore(score);
+      $('#label').className = `badge ${lab.k}`;
+      $('#label').textContent = lab.text;
+      const s = score.toFixed(2);
+      $('#summary').textContent = `Score: ${s} • Approach: ${approach==='lexicon'?'Lexicon rules':'Emoji & punctuation'}`;
+      $('#explain').innerHTML = renderExplanation(reasons);
+      speak(lab.text);
+    }
+    // ---------- HERO EMOJI METER (wired to existing markup) ----------
+const heroBar   = document.querySelector('.hero-card .meter > span');
+const heroChips = document.querySelectorAll('.hero-card .chip');
+
+// map score -> 0..100% width; clamp to [-2, 2] so the bar feels stable
+function setHeroMeterFromScore(score) {
+  if (!heroBar) return;
+  const s = Math.max(-2, Math.min(2, score));
+  const pct = ((s + 2) / 4) * 100; // -2 => 0%, 0 => 50%, +2 => 100%
+  heroBar.style.width = pct + '%';
+
+  // set bar color
+  if (s < 0) {
+    heroBar.style.backgroundColor = 'red';      // negative
+  } else if (s === 0) {
+    heroBar.style.backgroundColor = 'orange';   // neutral
+  } else {
+    heroBar.style.backgroundColor = 'green';    // positive
+  }
+}
+
+// reuse your existing lexicon analyzer
+function heroAnalyze(text) {
+  const { score } = sentimentLexicon(text);
+  setHeroMeterFromScore(score);
+}
+
+// click the three sample chips in the hero card
+heroChips.forEach(chip => {
+  chip.addEventListener('click', () => heroAnalyze(chip.textContent));
+});
+
+// start neutral
+setHeroMeterFromScore(0);
+
+
+    // ---------- Quiz ----------
+    const QUESTIONS = [
+      {t:'I love school trips!', a:'pos'},
+      {t:'This is not good.', a:'neg'},
+      {t:'It is a pencil.', a:'neu'},
+      {t:'Homework is AWESOME!!!', a:'pos'},
+      {t:'I hate waking up early', a:'neg'},
+      {t:'The sky is blue.', a:'neu'},
+      {t:'I am very happy today', a:'pos'},
+      {t:'That movie was the worst', a:'neg'},
+      {t:'We have classes.', a:'neu'}
+    ];
+    let qi=0, score=0;
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+    const QUIZ = shuffle(QUESTIONS.slice()).slice(0,5);
+
+    function showQ(){
+      const q = QUIZ[qi];
+      $('#qText').textContent = q? q.t : 'All done!';
+      $('#score').textContent = q? `Question ${qi+1} of ${QUIZ.length}` : `Score: ${score}/${QUIZ.length}`;
+      if(!q){ $$('.choices .btn').forEach(b=> b.disabled = true); speak(`Quiz finished. You scored ${score} out of ${QUIZ.length}.`); }
+    }
+
+    $$('.choices .btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const choice = btn.dataset.choice;
+        const correct = QUIZ[qi].a;
+        if(choice===correct){ score++; btn.classList.add('primary'); speak('Correct!'); }
+        else { btn.style.background = 'rgba(239,68,68,.3)'; speak('Try the next one!'); }
+        qi++; setTimeout(()=>{ $$('.choices .btn').forEach(b=>{ b.classList.remove('primary'); b.style.background=''; }); showQ(); }, 600);
+      });
+    });
+
+    // ---------- Wire up ----------
+    $('#startPlay').addEventListener('click', ()=>{ document.location.hash = '#play'; $('#text').focus(); });
+    $('#analyze').addEventListener('click', analyzeCurrent);
+    $('#clear').addEventListener('click', ()=>{ $('#text').value=''; analyzeCurrent(); $('#text').focus(); });
+    $$('.ex').forEach(c=> c.addEventListener('click', ()=>{ $('#text').value = c.textContent; analyzeCurrent(); }));
+    $$('input[name="approach"]').forEach(r=> r.addEventListener('change', analyzeCurrent));
+
+    // Year
+    $('#year').textContent = new Date().getFullYear();
+    showQ();
+  
+  </script>
+</body>
+</html>
