@@ -30,7 +30,7 @@
       --brand-2: #60a5fa; /* blue */
       --pos: #16a34a;
       --neg: #ef4444;
-      --neu: #64748b;
+      --neu: white;
       --ring: rgba(96,165,250,.4);
     }
     * { box-sizing: border-box; }
@@ -97,7 +97,7 @@
     .badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; font-weight: 800; letter-spacing: .2px; }
     .badge.pos { background: rgba(22,163,74,.15); color: var(--pos); }
     .badge.neg { background: rgba(239,68,68,.15); color: var(--neg); }
-    .badge.neu { background: orangered; color: var(--neu); }
+    .badge.neu { background: orange; color: var(--neu); }
 
     .explain { margin-top: 12px; color: var(--muted); font-size: 14px; }
     .explain .kw { display: inline-block; margin: 4px 6px 0 0; padding: 6px 8px; border-radius: 10px; background: rgba(255,255,255,.06); border: 1px dashed rgba(255,255,255,.12); }
@@ -168,8 +168,7 @@
         </div>
         
       </div>
-      <div class="nav-links" role="navigation" aria-label="Primary">
-        <a href="#learn">Learn</a>
+      <div class="nav-links" role="navigation" aria-label="Primary">       
         <a href="#play">Play</a>
         <a href="#quiz">Quiz</a>
         <a href="#about">About</a>
@@ -199,9 +198,10 @@
         </div>
         <div class="meter"><span></span></div>
         <div class="legend">
-  <span style="color:red;">■ Negative</span>
-  <span style="color:orange;">■ Neutral</span>
-  <span style="color:green;">■ Positive</span>
+ <span style="color: red;">■</span> <span style="color: white;">Negative</span><br>
+<span style="color: orange;">■</span> <span style="color: white;">Neutral</span><br>
+<span style="color: green;">■</span> <span style="color: white;">Positive</span>
+
 </div>
 
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -484,4 +484,3 @@ setHeroMeterFromScore(0);
   </script>
 </body>
 </html>
-
